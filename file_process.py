@@ -16,6 +16,11 @@ VAR_TO_TARGET = sasm_globals.VAR_TO_TARGET # Allowed variance to target
 SUSP_ABS = sasm_globals.SUSP_ABS
 P_DAYS = sasm_globals.periods['1st'][1]
 
+##########################################
+#
+# IMPORT BENCH DATA
+#
+###########################################
 def import_bench(user, mbt):
 
     st.subheader("Step 1:")
@@ -55,7 +60,12 @@ def import_bench(user, mbt):
         mbt.df_bench['Month of Hire Date'] = pd.to_datetime(mbt.df_bench['Month of Hire Date'])
         mbt.df_bench['Month of Hire Date'] = mbt.df_bench['Month of Hire Date'].dt.strftime('%B %Y')
      
-        
+
+##########################################
+#
+# IMPORT LAST BENCH DATA
+#
+###########################################
 def import_last_bench(user, mbt):
 
     st.subheader("Step 2:")
@@ -89,6 +99,11 @@ def import_last_bench(user, mbt):
             user.last_bench = "No File Selected"
             return
 
+##########################################
+#
+# IMPORT LABOR DATA
+#
+###########################################
 def import_labor_data(user, mbt):
             
     st.subheader("Step 3:")
@@ -120,7 +135,12 @@ def import_labor_data(user, mbt):
             st.warning("Labor data needs fields: 'Max. Hire Dt','Emplid','Billability Variance to Target','Billability','Suspense Amount','DL $ Target ','Total Absence Amount'")
             user.labor_path = "No File Selected"
             return
-            
+
+##########################################
+#
+# IMPORT LAST SASM DATA
+#
+###########################################
 def import_last_sasm(user, mbt):
 
     st.subheader("Step 4:")
@@ -154,6 +174,12 @@ def import_last_sasm(user, mbt):
             # user.last_sasm = "No File Selected"
             # return
 
+
+##########################################
+#
+# DISPLAY SIDE BAR
+#
+###########################################
 def side_bar(user,mbt):
     
     # Create a status table using a stoplight chart
@@ -239,7 +265,9 @@ def side_bar(user,mbt):
     
         # Export report if ready
         if not mbt.df_final_report.empty:
-            st.button(label="Export Report", on_click=lambda:sa.export_btn(mbt,user))
+            with open(user.file_path,'rb') as f:
+                st.download_button("Download Bench Report", f, file_name='bench.xlsx')
+            #st.button(label="Export Report", on_click=lambda:sa.export_btn(mbt,user))
     else:
         st.markdown("""
         <p style="font-family:Courier; color:Red; font-size: 20px;">Select Files</p>
@@ -248,9 +276,6 @@ def side_bar(user,mbt):
 
     
 def generate_report(user, mbt):
-    st.warning("No Data")
-
-
     """
     generate_report function does ALL the data analysis.  It uses the bench and labor
     dataframes and runs the following deciion tree:
@@ -346,6 +371,8 @@ def generate_report(user, mbt):
              "Clearance as confirmed by CM"
     ]
     mbt.df_new_hire = mbt.df_new_hire.reindex(columns=cols)
+    
+    sa.export_btn(mbt,user)
 
 #    # Check to see if there is new hire data in the previous SASM.
 #    # If there is, import the old data

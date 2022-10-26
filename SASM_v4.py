@@ -84,6 +84,7 @@ class User_Data:
         self.home_path = None
         self.last_bench = None
         self.new_hire = None
+        self.file_path = None
         self.bench_date = datetime.today()
 
         # Check for file and import data
@@ -609,6 +610,9 @@ def generate_report(my_billable_tracker, user):
 
     # Bring report tab into focus
     tabControl.select(tab3)
+    
+    # Create file / used for web-app only
+    # export_btn(mbt,user)
 
 
 def pair_openings():
@@ -928,11 +932,11 @@ def export_btn(mbt,user):
     writer.close()
     
     # Tell use file was exported:
-    file_path = os.path.join(DATA_DIR, f_name)
+    user.file_path = os.path.join(DATA_DIR, f_name)
     
 #    open_now = tk.messagebox.askquestion(title="Bench Report Exported", message=f"Bench Report Exported to: {file_path}.\nWould you like to open now?")
 #    if open_now == 'yes':
-    os.system("open " + file_path)
+    # os.system("open " + file_path)
     
 
 def select_bench_file(user, date_label):
